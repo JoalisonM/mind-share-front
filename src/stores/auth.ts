@@ -1,0 +1,124 @@
+import type { User, SignUpInput, SigninInput } from "@/dtos/user";
+import { LOGIN } from "@/graphql/mutations/login";
+import { REGISTER } from "@/graphql/mutations/register";
+import { apolloClient } from "@/lib/apollo";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+type LoginMutationData = {
+  login: {
+    token: string;
+    refreshToken: string;
+    user: User;
+  };
+};
+
+type RegisterMutationData = {
+  register: {
+    token: string;
+    refreshToken: string;
+    user: User;
+  };
+};
+
+interface AuthState {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  signin: (data: SigninInput) => Promise<boolean>;
+  signup: (data: SignUpInput) => Promise<boolean>;
+}
+
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      signin: async (loginData: SigninInput) => {
+        try {
+          const { data } = await apolloClient.mutate<
+            LoginMutationData,
+            { data: SigninInput }
+          >({
+            mutation: LOGIN,
+            variables: {
+              data: {
+                email: loginData.email,
+                password: loginData.password,
+              },
+            },
+          });
+
+          if (data?.login) {
+            const { token, user } = data.login;
+
+            set({
+              user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+              },
+              token,
+              isAuthenticated: true,
+            });
+
+            return true;
+          }
+
+          return false;
+        } catch (error) {
+          console.error("Erro ao fazer o login");
+
+          throw error;
+        }
+      },
+      signup: async (registerData: SignUpInput) => {
+        try {
+          const { data } = await apolloClient.mutate<
+            RegisterMutationData,
+            { data: SignUpInput }
+          >({
+            mutation: REGISTER,
+            variables: {
+              data: {
+                name: registerData.name,
+                email: registerData.email,
+                password: registerData.password,
+              },
+            },
+          });
+
+          if (data?.register) {
+            const { token, user } = data.register;
+
+            set({
+              user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+              },
+              token,
+              isAuthenticated: true,
+            });
+
+            return true;
+          }
+
+          return false;
+        } catch (error) {
+          console.error("Erro ao fazer o cadastro");
+
+          throw error;
+        }
+      },
+    }),
+    { name: "auth-store" },
+  ),
+);
