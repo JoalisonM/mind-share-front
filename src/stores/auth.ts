@@ -1,4 +1,4 @@
-import type { User, SignUpInput, SigninInput } from "@/dtos/user";
+import type { User, SignUpInput, LoginInput } from "@/dtos/user";
 import { LOGIN } from "@/graphql/mutations/login";
 import { REGISTER } from "@/graphql/mutations/register";
 import { apolloClient } from "@/lib/apollo";
@@ -25,7 +25,7 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
-  signin: (data: SigninInput) => Promise<boolean>;
+  login: (data: LoginInput) => Promise<boolean>;
   signup: (data: SignUpInput) => Promise<boolean>;
 }
 
@@ -35,11 +35,11 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isAuthenticated: false,
-      signin: async (loginData: SigninInput) => {
+      login: async (loginData: LoginInput) => {
         try {
           const { data } = await apolloClient.mutate<
             LoginMutationData,
-            { data: SigninInput }
+            { data: LoginInput }
           >({
             mutation: LOGIN,
             variables: {
@@ -58,7 +58,7 @@ export const useAuthStore = create<AuthState>()(
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                role: user.role,
+                // role: user.role,
                 createdAt: user.createdAt,
                 updatedAt: user.updatedAt,
               },
@@ -100,7 +100,7 @@ export const useAuthStore = create<AuthState>()(
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                role: user.role,
+                // role: user.role,
                 createdAt: user.createdAt,
                 updatedAt: user.updatedAt,
               },

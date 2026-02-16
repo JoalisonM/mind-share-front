@@ -34,13 +34,13 @@ export function Login() {
   });
 
   const navigate = useNavigate();
-  const signin = useAuthStore((state) => state.signin);
+  const login = useAuthStore((state) => state.login);
 
   async function onSubmit({ email, password }: LoginInput) {
     try {
-      const signinMutation = await signin({ email, password });
+      const loginMutation = await login({ email, password });
 
-      if (signinMutation) navigate("/");
+      if (loginMutation) navigate("/");
     } catch {
       toast.error("E-mail ou senha inválidos");
     }
@@ -78,7 +78,11 @@ export function Login() {
 
             <div className="space-y-2">
               <Label htmlFor="email">Senha</Label>
-              <Input placeholder="Digite sua senha" {...register("password")} />
+              <Input
+                type="password"
+                placeholder="Digite sua senha"
+                {...register("password")}
+              />
               {errors.password?.message && (
                 <span className="text-xs text-red-700">
                   {errors.password?.message}
@@ -87,6 +91,7 @@ export function Login() {
             </div>
 
             <Button
+              type="submit"
               className="w-full h-10 bg-indigo-700 hover:bg-indigo-800"
               disabled={isSubmitting || !isValid}
             >

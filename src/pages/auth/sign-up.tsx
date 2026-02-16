@@ -96,7 +96,11 @@ export function SignUp() {
 
             <div className="space-y-2">
               <Label htmlFor="email">Senha</Label>
-              <Input placeholder="Digite sua senha" {...register("password")} />
+              <Input
+                type="password"
+                placeholder="Digite sua senha"
+                {...register("password")}
+              />
               {errors.password?.message && (
                 <span className="text-xs text-red-700">
                   {errors.password?.message}
@@ -105,6 +109,7 @@ export function SignUp() {
             </div>
 
             <Button
+              type="submit"
               className="w-full h-10 bg-indigo-700 hover:bg-indigo-800"
               disabled={isSubmitting || !isValid}
             >
@@ -125,7 +130,7 @@ export function SignUp() {
         </CardHeader>
 
         <CardContent>
-          <Link to="/sign-in">
+          <Link to="/login">
             <Button className="w-full h-10 bg-gray-100 border border-gray-200 text-gray-700 hover:bg-gray-200">
               Acessar conta
             </Button>
