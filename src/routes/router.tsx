@@ -7,14 +7,15 @@ import { AuthLayout } from "@/layouts/auth-layout";
 import { PublicRoute } from "@/components/public-route";
 import { Ideas } from "@/pages/ideas";
 import { AppLayout } from "@/layouts/app-layout";
+import { Members } from "@/pages/members";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      // <PublicRoute>
-      <AuthLayout />
-      // </PublicRoute>
+      <PublicRoute>
+        <AuthLayout />
+      </PublicRoute>
     ),
     children: [
       {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Ideas />,
+      },
+      {
+        path: "/members",
+        element: <Members />,
       },
     ],
   },

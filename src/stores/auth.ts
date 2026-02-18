@@ -25,6 +25,7 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
+  logout: () => void;
   login: (data: LoginInput) => Promise<boolean>;
   signup: (data: SignUpInput) => Promise<boolean>;
 }
@@ -117,6 +118,15 @@ export const useAuthStore = create<AuthState>()(
 
           throw error;
         }
+      },
+      logout: () => {
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+        });
+
+        apolloClient.clearStore();
       },
     }),
     { name: "auth-store" },

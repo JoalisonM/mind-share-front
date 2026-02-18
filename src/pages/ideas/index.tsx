@@ -13,6 +13,7 @@ import { useQuery } from "@apollo/client/react";
 import { LIST_IDEAS } from "@/graphql/queries/idea";
 import type { Idea } from "@/dtos/idea";
 import { IdeaCard } from "./components/idea-card";
+import { IdeaDetailDrawer } from "./components/idea-detail-drawer";
 
 export function Ideas() {
   const [openDialog, setOpenDialog] = useState(false);
@@ -86,6 +87,12 @@ export function Ideas() {
       </div>
 
       <CreateIdeaDialog open={openDialog} onOpenChange={setOpenDialog} />
+
+      <IdeaDetailDrawer
+        open={openDrawer}
+        ideaId={selectedIdeaId}
+        onOpenChange={setOpenDrawer}
+      />
     </div>
   );
 }
